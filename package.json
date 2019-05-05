@@ -30,7 +30,9 @@
     },
     "homepage": "https://github.com/chas-academy/u10-mern-backend#readme",
     "dependencies": {
-        "express": "^4.16.4"
+        "express": "^4.16.4",
+        "express-handlebars": "^3.0.2",
+        "mongoose": "^5.5.5"
     },
     "devDependencies": {
         "eslint": "^5.16.0",
