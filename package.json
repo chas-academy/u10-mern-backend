@@ -1,0 +1,22 @@
+{
+  "name": "u10-mern-backend",
+  "version": "1.0.0",
+  "description": "Backend for Moment 23 meditation app",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chas-academy/u10-mern-backend.git"
+  },
+  "author": "Moment 23",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chas-academy/u10-mern-backend/issues"
+  },
+  "homepage": "https://github.com/chas-academy/u10-mern-backend#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
