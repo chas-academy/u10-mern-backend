@@ -6,7 +6,8 @@
     "scripts": {
         "start": "node src/index",
         "dev": "nodemon src/index",
-        "lint": "eslint 'src/*.js' --fix"
+        "lint": "eslint 'src/**/*.js' --fix",
+        "lint:check": "eslint 'src/**/*.js'"
     },
     "husky": {
         "hooks": {
