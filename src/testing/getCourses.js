@@ -1,26 +1,45 @@
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
 
 // Goal: Return object containing all courses including their lessons
 
 const directory = './courses';
 
-function structureSessions(session) {
-  const sessionObj = {
-    title: path.basename(session, path.extname(session)),
-    filePath: path.resolve(session),
-    imgSrc: '',
-    duration: '',
-  };
-  console.log(sessionObj);
+// Creates an object for each session, containing information about the session
+// Takes in an array of sessions
+function structureSessions(sessions, callback) {
+  const structuredSessions = [];
+
+  let itemsProcessed = 0;
+
+  sessions.forEach((session) => {
+    itemsProcessed += 1;
+
+    const sessionObj = {
+      title: path.basename(session, path.extname(session)),
+      filePath: path.resolve(session),
+      imgSrc: '',
+      duration: '',
+    };
+
+    structuredSessions.push(sessionObj);
+
+    if (itemsProcessed === sessions.length) {
+      callback(structuredSessions);
+    }
+  });
 }
 
-function newFn(dir, callback) {
+// Creates an array with objects representing the courses in a given directory
+// Takes in a directory containing a subdirectory for each course
+function coursesData(dir, callback) {
   // 1. Create empty array for courses
   const courses = [];
   // 2. Read courses directories
-  fs.readdir(directory, (error, files) => {
+  fs.readdir(dir, (error, files) => {
     let itemsProcessed = 0;
+
     files.forEach((file, index) => {
       // 3. Add one object per course
       courses.push({
@@ -28,24 +47,27 @@ function newFn(dir, callback) {
         sessions: [],
       });
 
+      const coursePath = path.join(dir, file);
 
-      const coursePath = path.join(directory, file);
-      // Insert respective sessions array into course objects
+      // 4. Read directory of this course's sessions
       fs.readdir(coursePath, (err, sessions) => {
         itemsProcessed += 1;
-        sessions.forEach((session) => {
-          structureSessions(session); // Will be used to flesh out sessions
+
+        // 5. Create structured session objects with session meta data
+        structureSessions(sessions, (structuredSessions) => {
+          courses[index].sessions = structuredSessions;
+
+          // 6. When done, send courses to callback
+          if (itemsProcessed === courses.length) {
+            callback(courses);
+          }
         });
-        courses[index].sessions = sessions;
-        if (itemsProcessed === courses.length) {
-          callback(courses);
-        }
       });
     });
   });
 }
 
 
-newFn(directory, (courses) => {
-  console.log(courses);
+coursesData(directory, (courses) => {
+  console.log(util.inspect(courses, { depth: Infinity })); // replace this with call to database
 });
