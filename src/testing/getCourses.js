@@ -5,6 +5,16 @@ const path = require('path');
 
 const directory = './courses';
 
+function structureSessions(session) {
+  const sessionObj = {
+    title: path.basename(session, path.extname(session)),
+    filePath: path.resolve(session),
+    imgSrc: '',
+    duration: '',
+  };
+  console.log(sessionObj);
+}
+
 function newFn(dir, callback) {
   // 1. Create empty array for courses
   const courses = [];
@@ -23,9 +33,9 @@ function newFn(dir, callback) {
       // Insert respective sessions array into course objects
       fs.readdir(coursePath, (err, sessions) => {
         itemsProcessed += 1;
-        // sessions.forEach((session) => {
-        //   structureSessions(session); // Will be used to flesh out sessions
-        // });
+        sessions.forEach((session) => {
+          structureSessions(session); // Will be used to flesh out sessions
+        });
         courses[index].sessions = sessions;
         if (itemsProcessed === courses.length) {
           callback(courses);
@@ -34,13 +44,6 @@ function newFn(dir, callback) {
     });
   });
 }
-
-// function structureSessions(session) {
-//   const title = path.basename(session, path.extname(session));
-//   const filePath = path.resolve(session);
-//   const imgSrc = ''; // Change this later when we have set img directory
-//   const duration = ''; // Change this when we have a way to get duration
-// }
 
 
 newFn(directory, (courses) => {
