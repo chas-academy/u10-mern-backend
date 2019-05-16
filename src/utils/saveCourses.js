@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const util = require('util');
-
 const mp3Duration = require('mp3-duration');
+const Course = require('../models/course/index.js');
+const Session = require('../models/session/index.js');
 
 // Goal: Return object containing all courses including their lessons
 
@@ -82,6 +82,27 @@ function coursesData(dir, callback) {
   });
 }
 
-coursesData(directory, (courses) => {
-  console.log(util.inspect(courses, { depth: Infinity })); // replace this with call to database
+coursesData(directory, async (courses) => {
+  await courses.map(async (course) => {
+    let curCourse;
+    await course.sessions.forEach((session, index) => {
+      curCourse = course;
+      curCourse.sessions[index] = new Session(session);
+    });
+
+    const newCourse = new Course(curCourse);
+
+
+    Course.find(newCourse, (err) => {
+      if (err) console.error(err);
+
+      console.log('Document already exists');
+    });
+
+    newCourse.save((err, savedCourse) => {
+      if (err) console.error(err);
+
+      console.log(`Save Successful!: ${savedCourse}`);
+    });
+  });
 });

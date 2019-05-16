@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const sessionSchema = require('../session/');
+const sessionSchema = require('../session/schema.js');
 
 const { Schema } = mongoose;
 
