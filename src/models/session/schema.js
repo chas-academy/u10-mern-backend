@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 // Schema for a single meditation session/lesson
 const sessionSchema = new Schema({
   title: String,
-  duration: String,
+  duration: Number, // Seconds
   filePath: String,
   imgSrc: String,
 });
