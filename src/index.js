@@ -8,11 +8,13 @@ const app = express();
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
+  cookie: { secure: false },
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
+  credentials: true,
   origin: process.env.CLIENT_ORIGIN,
 }));
 require('./config/db');
