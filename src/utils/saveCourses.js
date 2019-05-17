@@ -82,27 +82,30 @@ function coursesData(dir, callback) {
   });
 }
 
-coursesData(directory, async (courses) => {
-  await courses.map(async (course) => {
-    let curCourse;
-    await course.sessions.forEach((session, index) => {
-      curCourse = course;
-      curCourse.sessions[index] = new Session(session);
+// Create courses and sessions objects and send them to database
+coursesData(directory, (courses) => {
+  courses.forEach(async (curCourse) => {
+    let tempCourse;
+
+    await curCourse.sessions.forEach((session, index) => {
+      tempCourse = curCourse;
+      tempCourse.sessions[index] = new Session(session);
     });
 
-    const newCourse = new Course(curCourse);
+    const newCourse = new Course(tempCourse);
 
-
-    Course.find(newCourse, (err) => {
+    Course.findOne({ name: newCourse.name }, (err, course) => {
       if (err) console.error(err);
 
-      console.log('Document already exists');
-    });
+      if (course) {
+        console.log(`Document already exists: ${course.name}`);
+      } else {
+        newCourse.save((error, savedCourse) => {
+          if (error) console.error(error);
 
-    newCourse.save((err, savedCourse) => {
-      if (err) console.error(err);
-
-      console.log(`Save Successful!: ${savedCourse}`);
+          console.log(`Save Successful!: ${savedCourse.name}`);
+        });
+      }
     });
   });
 });
