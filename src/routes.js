@@ -17,9 +17,8 @@ router.get(
 router.get(
   '/user',
   (req, res) => {
-    const { name, email } = req.user.google;
-
     if (req.isAuthenticated()) {
+      const { name, email } = req.user.google;
       return res.json({
         success: true,
         user: {
@@ -28,10 +27,7 @@ router.get(
         },
       });
     }
-    return res.json({
-      success: false,
-      err: 'Not authenticated',
-    });
+    return res.status(401).send('Not authenticated');
   },
 );
 
