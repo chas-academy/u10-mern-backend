@@ -4,9 +4,13 @@ const mp3Duration = require('mp3-duration');
 const Course = require('../models/course/index.js');
 const Session = require('../models/session/index.js');
 
-// Goal: Return object containing all courses including their lessons
+// This file is for creating and saving course objects to the database.
+// The course objects will contain course and session meta data, and is
+// retrieved by looking in the directory containing the courses directories.
+// Inside each course directory there should be the session mp3 files.
 
-// The directory containing the courses
+
+// The directory containing the course directories
 const directory = './courses';
 
 // Creates an object for each session, containing information about the session
@@ -47,6 +51,7 @@ function structureSessions(sessions, coursePath, callback) {
 function coursesData(dir, callback) {
   // 1. Create empty array for courses
   const coursesArray = [];
+
   // 2. Read courses directories
   fs.readdir(dir, (err, courses) => {
     if (err) console.error(err);
@@ -94,6 +99,7 @@ coursesData(directory, (courses) => {
 
     const newCourse = new Course(tempCourse);
 
+    // Check if course already exists in DB
     Course.findOne({ name: newCourse.name }, (err, course) => {
       if (err) console.error(err);
 
