@@ -54,7 +54,12 @@ function coursesData(dir, callback) {
 
   // 2. Read courses directories
   fs.readdir(dir, (err, courses) => {
-    if (err) console.error(err);
+    if (err && err.code === 'ENOENT') {
+      callback(err, null);
+      return;
+    } if (err) {
+      console.err(err);
+    }
 
     let coursesProcessed = 0;
 
@@ -79,7 +84,7 @@ function coursesData(dir, callback) {
 
           // 6. When done, send courses to callback
           if (coursesProcessed === coursesArray.length) {
-            callback(coursesArray);
+            callback(null, coursesArray);
           }
         });
       });
@@ -88,30 +93,37 @@ function coursesData(dir, callback) {
 }
 
 // Create courses and sessions objects and send them to database
-coursesData(directory, (courses) => {
-  courses.forEach(async (curCourse) => {
-    let tempCourse;
+coursesData(directory, (err, courses) => {
+  // If no directory is found, does nothing, else uploads all new courses to database.
+  if (err && err.code === 'ENOENT') {
+    console.error('Directory for courses not found');
+  } else if (err) {
+    console.error(err);
+  } else {
+    courses.forEach(async (curCourse) => {
+      let tempCourse;
 
-    await curCourse.sessions.forEach((session, index) => {
-      tempCourse = curCourse;
-      tempCourse.sessions[index] = new Session(session);
+      await curCourse.sessions.forEach((session, index) => {
+        tempCourse = curCourse;
+        tempCourse.sessions[index] = new Session(session);
+      });
+
+      const newCourse = new Course(tempCourse);
+
+      // Check if course already exists in DB
+      Course.findOne({ name: newCourse.name }, (error, course) => {
+        if (error) console.error(error);
+
+        if (course) {
+          console.log(`Document already exists: ${course.name}`);
+        } else {
+          newCourse.save((erro, savedCourse) => {
+            if (erro) console.error(erro);
+
+            console.log(`Save Successful!: ${savedCourse.name}`);
+          });
+        }
+      });
     });
-
-    const newCourse = new Course(tempCourse);
-
-    // Check if course already exists in DB
-    Course.findOne({ name: newCourse.name }, (err, course) => {
-      if (err) console.error(err);
-
-      if (course) {
-        console.log(`Document already exists: ${course.name}`);
-      } else {
-        newCourse.save((error, savedCourse) => {
-          if (error) console.error(error);
-
-          console.log(`Save Successful!: ${savedCourse.name}`);
-        });
-      }
-    });
-  });
+  }
 });
