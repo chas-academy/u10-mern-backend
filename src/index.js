@@ -4,6 +4,8 @@ const session = require('express-session');
 const cors = require('cors');
 require('dotenv').config();
 
+require('./utils/saveCourses.js');
+
 const app = express();
 app.use(session({
   secret: process.env.SESSION_SECRET,
