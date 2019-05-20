@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const passport = require('passport');
 
+const CourseController = require('./controllers/CourseController.js');
+
 router.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
@@ -29,5 +31,9 @@ router.get(
     return res.status(401).send('Not authenticated');
   },
 );
+
+router.get('/courses', (req, res) => {
+  CourseController.getCourses(res);
+});
 
 module.exports = router;
