@@ -2,12 +2,12 @@
     "name": "u10-mern-backend",
     "version": "1.0.0",
     "description": "Backend for Moment 23 meditation app",
-    "main": "src/server.js",
+    "main": "src/index.js",
     "scripts": {
-        "start": "node server",
-        "dev": "nodemon server",
-        "lint": "eslint '**/*.js' --fix",
-        "lint:check": "eslint '**/*.js'"
+        "start": "node src/index",
+        "dev": "nodemon src/index",
+        "lint": "eslint 'src/**/*.js' --fix",
+        "lint:check": "eslint 'src/**/*.js'"
     },
     "husky": {
         "hooks": {
@@ -15,7 +15,7 @@
         }
     },
     "lint-staged": {
-        "*.js": [
+        "src/**/*.js": [
             "eslint --fix",
             "git add"
         ]
@@ -31,8 +31,14 @@
     },
     "homepage": "https://github.com/chas-academy/u10-mern-backend#readme",
     "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^8.0.0",
         "express": "^4.16.4",
-        "mongoose": "^5.5.5"
+        "express-session": "^1.16.1",
+        "mongoose": "^5.5.6",
+        "mp3-duration": "^1.1.0",
+        "passport": "^0.4.0",
+        "passport-google-oauth20": "^2.0.0"
     },
     "devDependencies": {
         "eslint": "^5.16.0",
