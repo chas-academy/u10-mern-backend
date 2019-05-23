@@ -7,7 +7,6 @@ const sessionSchema = new Schema({
   title: String,
   duration: Number, // Seconds
   filePath: String,
-  imgSrc: String,
 });
 
 module.exports = sessionSchema;
