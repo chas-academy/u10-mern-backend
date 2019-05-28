@@ -25,7 +25,6 @@ function structureSessions(sessions, coursePath, callback) {
     const sessionObj = {
       title: path.basename(session, path.extname(session)),
       filePath: path.resolve(session),
-      imgSrc: '',
       duration: '',
     };
 

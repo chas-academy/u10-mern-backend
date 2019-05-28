@@ -15,6 +15,9 @@ const userSchema = new Schema({
     email: String,
     name: String,
   },
+  subscription: {
+    active: { type: Boolean, default: false },
+  },
 }, { timestamps: true });
 
 module.exports = userSchema;
