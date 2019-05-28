@@ -21,10 +21,12 @@ router.get(
   (req, res) => {
     if (req.isAuthenticated()) {
       const { name, email } = req.user.google;
+      const { subscription } = req.user;
       return res.json({
         user: {
           name,
           email,
+          subscription,
         },
       });
     }
