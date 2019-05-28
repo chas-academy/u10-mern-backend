@@ -1,4 +1,5 @@
 const User = require('../../models/user');
+const facebookStrategy = require('./facebookStrategy');
 const googleStrategy = require('./googleStrategy');
 
 module.exports = (passport) => {
@@ -12,5 +13,6 @@ module.exports = (passport) => {
     });
   });
 
+  passport.use(facebookStrategy);
   passport.use(googleStrategy);
 };
