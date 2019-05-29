@@ -21,6 +21,7 @@ app.use(cors({
 }));
 require('./config/db');
 require('./config/passport')(passport);
-app.use(require('./routes'));
+app.use(require('./routes/root')); // Routes starting from root ('/')
+app.use('/api', require('./routes/api')); // Routes starting from '/api'
 
 app.listen(process.env.PORT || 8080);
