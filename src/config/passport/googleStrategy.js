@@ -18,7 +18,7 @@ module.exports = new GoogleStrategy({
     const newUser = new User();
 
     newUser.google.id = profile.id;
-    newUser.google.accessToken = accessToken;
+    newUser.google.token = accessToken;
     newUser.google.name = profile.displayName;
     newUser.google.email = profile.emails[0].value;
 

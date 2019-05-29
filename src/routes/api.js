@@ -7,10 +7,12 @@ router.get(
   (req, res) => {
     if (req.isAuthenticated()) {
       const { name, email } = req.user.google;
+      const { subscription } = req.user;
       return res.json({
         user: {
           name,
           email,
+          subscription,
         },
       });
     }
@@ -19,10 +21,7 @@ router.get(
 );
 
 router.get('/courses', (req, res) => {
-  if (req.isAuthenticated()) {
-    CourseController.getCourses(res);
-  }
-  return res.status(401).send('Not authenticated');
+  CourseController.getCourses(res);
 });
 
 module.exports = router;
