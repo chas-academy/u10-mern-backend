@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const mp3Duration = require('mp3-duration');
-const Course = require('../models/course/index.js');
-const Session = require('../models/session/index.js');
+const Course = require('../models/course.model');
+const Session = require('../models/session.model');
 
 // This file is for creating and saving course objects to the database.
 // The course objects will contain course and session meta data, and is
