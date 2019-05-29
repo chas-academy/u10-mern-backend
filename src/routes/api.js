@@ -21,7 +21,10 @@ router.get(
 );
 
 router.get('/courses', (req, res) => {
-  CourseController.getCourses(res);
+  if (req.isAuthenticated()) {
+    return CourseController.getCourses(res);
+  }
+  return res.status(401).send('Not authenticated');
 });
 
 module.exports = router;
