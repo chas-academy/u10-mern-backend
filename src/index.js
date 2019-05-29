@@ -26,10 +26,13 @@ app.use(cors({
   credentials: true,
   origin: process.env.CLIENT_ORIGIN,
 }));
+
 require('./config/db');
 require('./config/passport')(passport);
 require('./utils/saveCourses.js');
-app.use(require('./routes'));
+
+app.use(require('./routes/root')); // Routes starting from root ('/')
+app.use('/api', require('./routes/api')); // Routes starting from '/api'
 
 app.use((req, res) => {
   res.writeHead(200);
