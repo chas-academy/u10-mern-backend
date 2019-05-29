@@ -16,15 +16,15 @@ router.get(
         },
       });
     }
-    return res.status(401).send('Not authenticated');
+    return res.status(401).send('Not authenticated!');
   },
 );
 
 router.get('/courses', (req, res) => {
   if (req.isAuthenticated()) {
-    return CourseController.getCourses(res);
+    return CourseController.index(res);
   }
-  return res.status(401).send('Not authenticated');
+  return res.status(401).send('Not authenticated!');
 });
 
 module.exports = router;

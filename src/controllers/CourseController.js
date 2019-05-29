@@ -1,12 +1,11 @@
 const Course = require('../models/course/index.js');
 
-// Get all courses
-const getCourses = (res) => {
+const index = (res) => {
   Course.find({}, (err, courses) => {
-    if (err) console.error(err);
+    if (err) throw err;
 
     res.send(courses);
   });
 };
 
-module.exports = { getCourses };
+module.exports = { index };
