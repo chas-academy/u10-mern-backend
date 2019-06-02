@@ -24,7 +24,7 @@ function structureSessions(sessions, coursePath, callback) {
   sessions.forEach(async (session) => {
     const sessionObj = {
       title: path.basename(session, path.extname(session)),
-      filePath: path.resolve(session),
+      filePath: path.join(path.resolve(coursePath), session),
       duration: '',
     };
 
