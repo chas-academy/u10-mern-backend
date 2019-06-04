@@ -1,4 +1,4 @@
-const Course = require('../models/course/index.js');
+const Course = require('../models/course.model');
 
 const index = (res) => {
   Course.find({}, (err, courses) => {

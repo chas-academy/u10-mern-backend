@@ -31,8 +31,9 @@ require('./config/db');
 require('./config/passport')(passport);
 require('./utils/saveCourses.js');
 
-app.use(require('./routes/root')); // Routes starting from root ('/')
-app.use('/api', require('./routes/api')); // Routes starting from '/api'
+app.use(require('./routes/auth'));
+app.use('/api', require('./routes/user'));
+app.use('/api', require('./routes/course'));
 
 app.use((req, res) => {
   res.writeHead(200);
