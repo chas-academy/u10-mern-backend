@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+const { sessionSchema } = require('./session.model');
 
 const schema = new mongoose.Schema({
   title: String,
-  sessions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Session' }],
+  sessions: [sessionSchema],
 });
 
 module.exports = mongoose.model('Course', schema);

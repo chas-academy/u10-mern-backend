@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 
-const schema = new mongoose.Schema({
+const { Schema } = mongoose;
+
+const sessionSchema = new Schema({
   title: String,
   duration: Number, // Seconds
   audioUrl: String,
 });
 
-module.exports = mongoose.model('Session', schema);
+const Session = mongoose.model('Session', sessionSchema);
+
+module.exports = { Session, sessionSchema };

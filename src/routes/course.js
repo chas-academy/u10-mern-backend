@@ -5,6 +5,7 @@ const SessionController = require('../controllers/session.controller');
 
 // TODO:
 //  Add a new course to the db
+router.post('/courses', CourseController.add);
 //  Update a course in the db
 //  Delete a course in the db
 
@@ -12,6 +13,7 @@ const SessionController = require('../controllers/session.controller');
 //  Add a new session to the db
 //  Update a session in the db
 //  Delete a session in the db
+
 
 // GET a list of courses
 router.get('/courses', (req, res) => {
@@ -22,9 +24,7 @@ router.get('/courses', (req, res) => {
 });
 
 // get specific course
-router.get('/courses/:id', (req, res) => {
-  res.json({ response: `You sent a GET request for course ID: ${req.params.course_id}` });
-});
+router.get('/courses/:id', CourseController.get);
 
 router.get('/courses/:course_id/sessions', (req, res) => {
   res.json({ response: `You sent a GET request for all sessions in course ID: ${req.params.course_id}` });
