@@ -8,11 +8,7 @@ const SessionController = require('../controllers/session.controller');
 router.post('/courses', CourseController.add);
 //  Update a course in the db
 //  Delete a course in the db
-
-//  Get a list of sessions
-//  Add a new session to the db
-//  Update a session in the db
-//  Delete a session in the db
+// Get audio file for a session
 
 
 // GET a list of courses
@@ -39,6 +35,5 @@ router.get('/courses/:course_id/sessions/:session_id', SessionController.get);
 router.get('/courses/:course_id/sessions/:session_id/audio', (req, res) => {
   res.json({ response: `You sent a GET request audio file of session ID: ${req.params.session_id}` });
 });
-
 
 module.exports = router;

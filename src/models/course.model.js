@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { sessionSchema } = require('./session.model');
 
 const schema = new mongoose.Schema({
-  title: String,
+  name: String,
   sessions: [sessionSchema],
 });
 

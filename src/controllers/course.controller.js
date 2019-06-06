@@ -10,10 +10,8 @@ const index = (res) => {
 
 // Get a course by id
 const get = (req, res) => {
-  const id = req.params.course_id;
+  const { id } = req.params;
 
-  // TODO: Check why this returns null, probably because of the id is string in db or
-  // here when passed as arg, should be of type objectid
   Course.findById(id, (err, course) => {
     if (err) {
       console.error(err.message);
@@ -28,11 +26,11 @@ const get = (req, res) => {
 const add = (req, res) => {
   // validation and sanitization
 
-  const { title } = req.body;
+  // creating and saving
+  const { name } = req.body;
   const sessions = req.body.sessions || [];
 
-  // creating and saving
-  const course = new Course({ title, sessions });
+  const course = new Course({ name, sessions });
 
   course.save((err, savedCourse) => {
     if (err) return console.error(err);
