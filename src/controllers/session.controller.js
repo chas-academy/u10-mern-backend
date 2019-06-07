@@ -1,5 +1,7 @@
-const Session = require('../models/session.model');
+// const Session = require('../models/session.model');
 
+
+/*
 // Get a session by id
 const get = (req, res) => {
   const id = req.params.session_id;
@@ -12,7 +14,9 @@ const get = (req, res) => {
     return res.send(session);
   });
 };
+*/
 
+/*
 // Create and save a new session
 const add = (title, duration, audioUrl) => {
   // Validate and sanitize
@@ -26,5 +30,6 @@ const add = (title, duration, audioUrl) => {
     return console.log(`Successfully saved session: ${savedSession}`);
   });
 };
+*/
 
-module.exports = { add, get };
+module.exports = { };

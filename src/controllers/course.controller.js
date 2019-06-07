@@ -2,9 +2,9 @@ const Course = require('../models/course.model');
 
 const index = (res) => {
   Course.find({}, (err, courses) => {
-    if (err) throw err;
+    if (err) return console.error(err);
 
-    res.send(courses);
+    return res.send(courses);
   });
 };
 
@@ -14,19 +14,16 @@ const get = (req, res) => {
 
   Course.findById(id, (err, course) => {
     if (err) {
-      console.error(err.message);
       res.status(404).send('Resource not found');
+      return console.error(err.message);
     }
     res.send(course);
-    console.log(course);
+    return console.log(course);
   });
 };
 
 // Create and save a course
 const add = (req, res) => {
-  // validation and sanitization
-
-  // creating and saving
   const { name } = req.body;
   const sessions = req.body.sessions || [];
 
@@ -49,4 +46,18 @@ const add = (req, res) => {
   });
 };
 
-module.exports = { index, add, get };
+// Delete a specific course from db
+const remove = (req, res) => {
+  Course.findByIdAndDelete(req.params.id, (err, deletedCourse) => {
+    if (err) {
+      res.status(404).send('Resource not found');
+      return console.error(err);
+    }
+
+    return res.status(200).send(deletedCourse);
+  });
+};
+
+module.exports = {
+  index, add, get, remove,
+};
