@@ -59,6 +59,20 @@ const remove = (req, res) => {
   });
 };
 
+// Update a specific course (PATCH)
+const update = async (req, res) => {
+  await Course.findOneAndUpdate({ _id: req.params.id }, req.body, (err) => {
+    if (err) console.error(err);
+  });
+
+  Course.findById(req.params.id, (err, course) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    return res.send(course);
+  });
+};
+
 module.exports = {
-  index, add, get, remove,
+  index, add, get, remove, update,
 };

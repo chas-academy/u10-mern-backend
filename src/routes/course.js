@@ -6,7 +6,8 @@ const CourseController = require('../controllers/course.controller');
 // TODO:
 //  Add a new course to the db
 router.post('/courses', CourseController.add);
-//  Update a course in the db
+//  Update/modify a course in the db
+router.patch('/courses/:id', CourseController.update);
 //  Delete a course in the db
 router.delete('/courses/:id', CourseController.remove);
 // Get audio file for a session
