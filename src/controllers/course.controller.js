@@ -49,12 +49,13 @@ const add = (req, res) => {
 // Delete a specific course from db
 const remove = (req, res) => {
   Course.findByIdAndDelete(req.params.id, (err, deletedCourse) => {
-    if (err) {
-      res.status(404).send('Resource not found');
-      return console.error(err);
+    if (err || deletedCourse == null) {
+      if (err) console.error(err);
+
+      return res.status(404).send('Resource not found');
     }
 
-    return res.status(200).send(deletedCourse);
+    return res.status(200).send(`Deleted course "${deletedCourse.name}"`);
   });
 };
 
