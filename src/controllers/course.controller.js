@@ -73,6 +73,20 @@ const update = async (req, res) => {
   });
 };
 
+// Replace a specific course (PUT)
+const replace = (req, res) => {
+  Course.replaceOne({ _id: req.params.id }, req.body, (err) => {
+    if (err) console.error(err);
+
+    res.send(Course.findById(req.params.id, (error, course) => {
+      if (err) {
+        return console.error(error.message);
+      }
+      return res.send(course);
+    }));
+  });
+};
+
 module.exports = {
-  index, add, get, remove, update,
+  index, add, get, remove, update, replace,
 };
