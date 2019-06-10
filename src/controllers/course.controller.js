@@ -76,11 +76,15 @@ const update = async (req, res) => {
 // Replace a specific course (PUT)
 const replace = (req, res) => {
   Course.replaceOne({ _id: req.params.id }, req.body, (err) => {
-    if (err) console.error(err);
+    if (err) {
+      console.error(err.message);
+      return res.send({ error: { message: err.message } });
+    }
 
-    res.send(Course.findById(req.params.id, (error, course) => {
+    return res.send(Course.findById(req.params.id, (error, course) => {
       if (err) {
-        return console.error(error.message);
+        console.error(error.message);
+        return res.send({ error: { message: err.message } });
       }
       return res.send(course);
     }));
