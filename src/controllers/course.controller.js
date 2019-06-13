@@ -97,49 +97,55 @@ const replace = (req, res) => {
   });
 };
 
-const getAudio = async (req, res) => {
+const getAudio = (req, res) => {
   // Get course that contains the session
-  const course = await Course.findById(req.params.course_id, (err, result) => {
-    if (err) return res.send(err.message);
-    if (result === null) return res.status(404).send({ error: { message: `Could not find course with id: ${req.params.course_id}` } });
-    return result;
-  });
-
-  // Get audio file path from session document inside the course
-  const filePath = await course.sessions.id(req.params.session_id).audioUrl;
-
-  // Send file as audio stream
-  fs.stat(filePath, (err, stats) => {
+  Course.findById(req.params.course_id, (err, course) => {
     if (err) {
-      res.send(err.message);
-    } else {
-      const total = stats.size;
-
-      // Stream audio from client-selected starting point, else stream from start of file
-      if (req.headers.range) {
-        const { range } = req.headers;
-        const parts = range.replace(/bytes=/, '').split('-');
-        const partialStart = parts[0];
-        const partialEnd = parts[1];
-
-        const start = parseInt(partialStart, 10);
-        const end = partialEnd ? parseInt(partialEnd, 10) : total - 1;
-        const chunkSize = (end - start) + 1;
-        const readStream = fs.createReadStream(filePath, { start, end });
-
-        res.writeHead(206, {
-          'Content-Range': `bytes ${start}-${end}/${total}`,
-          'Accept-Ranges': 'bytes',
-          'Content-Length': chunkSize,
-          'Content-Type': 'audio/mpeg',
-        });
-
-        readStream.pipe(res);
-      } else {
-        res.writeHead(200, { 'Content-Length': total, 'Content-Type': 'audio/mpeg' });
-        fs.createReadStream(filePath).pipe(res);
-      }
+      return res.send(err.message);
     }
+
+    const session = course.sessions.id(req.params.session_id);
+
+    if (!course || !session) {
+      return res.status(404).send({ error: { message: 'Resource not found' } });
+    }
+
+    // Get audio file path from session document inside the course
+    const filePath = course.sessions.id(req.params.session_id).audioUrl;
+
+    // Send file as audio stream
+    return fs.stat(filePath, (error, stats) => {
+      if (error) {
+        res.send(error.message);
+      } else {
+        const total = stats.size;
+
+        // Stream audio from client-selected starting point, else stream from start of file
+        if (req.headers.range) {
+          const { range } = req.headers;
+          const parts = range.replace(/bytes=/, '').split('-');
+          const partialStart = parts[0];
+          const partialEnd = parts[1];
+
+          const start = parseInt(partialStart, 10);
+          const end = partialEnd ? parseInt(partialEnd, 10) : total - 1;
+          const chunkSize = (end - start) + 1;
+          const readStream = fs.createReadStream(filePath, { start, end });
+
+          res.writeHead(206, {
+            'Content-Range': `bytes ${start}-${end}/${total}`,
+            'Accept-Ranges': 'bytes',
+            'Content-Length': chunkSize,
+            'Content-Type': 'audio/mpeg',
+          });
+
+          readStream.pipe(res);
+        } else {
+          res.writeHead(200, { 'Content-Length': total, 'Content-Type': 'audio/mpeg' });
+          fs.createReadStream(filePath).pipe(res);
+        }
+      }
+    });
   });
 };
 
