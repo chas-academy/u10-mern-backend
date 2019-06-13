@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const sessionSchema = new Schema({
   title: String,
   duration: Number, // Seconds
-  audioUrl: String,
+  filePath: String,
 });
 
 const Session = mongoose.model('Session', sessionSchema);
