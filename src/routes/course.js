@@ -24,6 +24,8 @@ router.get('/courses', (req, res) => {
 // get specific course
 router.get('/courses/:id', CourseController.get);
 
+router.get('/courses/:course_id/sessions/:session_id/audio', CourseController.getAudio);
 router.get('/audio', CourseController.getAudio);
+
 
 module.exports = router;
