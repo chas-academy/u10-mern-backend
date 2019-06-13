@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const Course = require('../models/course.model');
 
 const index = (res) => {
@@ -95,6 +97,38 @@ const replace = (req, res) => {
   });
 };
 
+const getAudio = (req, res) => {
+  const filePath = './courses/Cmon Dude/Fuaark.mp3';
+  fs.stat(filePath, (err, stats) => {
+    if (err) {
+      res.send(err.message);
+    } else {
+      const total = stats.size;
+      if (req.headers.range) {
+        const { range } = req.headers;
+        const parts = range.replace(/bytes=/, '').split('-');
+        const partialstart = parts[0];
+        const partialend = parts[1];
+
+        const start = parseInt(partialstart, 10);
+        const end = partialend ? parseInt(partialend, 10) : total - 1;
+        const chunksize = (end - start) + 1;
+        const readStream = fs.createReadStream(filePath, { start, end });
+        res.writeHead(206, {
+          'Content-Range': `bytes ${start}-${end}/${total}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunksize,
+          'Content-Type': 'audio/mpeg',
+        });
+        readStream.pipe(res);
+      } else {
+        res.writeHead(200, { 'Content-Length': total, 'Content-Type': 'audio/mpeg' });
+        fs.createReadStream(filePath).pipe(res);
+      }
+    }
+  });
+};
+
 module.exports = {
-  index, add, get, remove, update, replace,
+  index, add, get, remove, update, replace, getAudio,
 };

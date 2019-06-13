@@ -24,9 +24,6 @@ router.get('/courses', (req, res) => {
 // get specific course
 router.get('/courses/:id', CourseController.get);
 
-// Get audio file for specific course
-router.get('/courses/:course_id/sessions/:session_id/audio', (req, res) => {
-  res.json({ response: `You sent a GET request audio file of session ID: ${req.params.session_id}` });
-});
+router.get('/audio', CourseController.getAudio);
 
 module.exports = router;
