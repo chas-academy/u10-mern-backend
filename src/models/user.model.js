@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
-
-const userSchema = new Schema({
+const schema = new mongoose.Schema({
   facebook: {
     id: String,
     token: String,
@@ -20,4 +18,4 @@ const userSchema = new Schema({
   },
 }, { timestamps: true });
 
-module.exports = userSchema;
+module.exports = mongoose.model('User', schema);
