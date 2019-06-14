@@ -1,4 +1,4 @@
-const User = require('../../models/user');
+const User = require('../../models/user.model');
 const facebookStrategy = require('./facebookStrategy');
 const googleStrategy = require('./googleStrategy');
 
