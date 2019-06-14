@@ -1,7 +1,5 @@
 const router = require('express').Router();
 
-const CourseController = require('../controllers/CourseController.js');
-
 router.get(
   '/user',
   (req, res) => {
@@ -16,15 +14,8 @@ router.get(
         },
       });
     }
-    return res.status(401).send('Not authenticated');
+    return res.status(401).send('Not authenticated!');
   },
 );
-
-router.get('/courses', (req, res) => {
-  if (req.isAuthenticated()) {
-    return CourseController.getCourses(res);
-  }
-  return res.status(401).send('Not authenticated');
-});
 
 module.exports = router;
