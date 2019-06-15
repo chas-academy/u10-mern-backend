@@ -18,11 +18,11 @@ const get = (req, res) => {
 
 /*
 // Create and save a new session
-const add = (title, duration, audioUrl) => {
+const add = (title, duration, filePath) => {
   // Validate and sanitize
 
   // Create and save
-  const session = new Session({ title, duration, audioUrl });
+  const session = new Session({ title, duration, filePath });
 
   session.save((err, savedSession) => {
     if (err) return console.error(err);

@@ -111,7 +111,7 @@ const getAudio = (req, res) => {
     }
 
     // Get audio file path from session document inside the course
-    const filePath = course.sessions.id(req.params.session_id).audioUrl;
+    const { filePath } = course.sessions.id(req.params.session_id);
 
     // Send file as audio stream
     return fs.stat(filePath, (error, stats) => {
