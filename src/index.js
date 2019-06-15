@@ -2,10 +2,11 @@ const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
-const https = require('https');
 require('dotenv').config();
 
 const app = express();
+
+app.use(express.json());
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -34,4 +35,4 @@ app.use((req, res) => {
   res.end('Hello, World!\n');
 });
 
-https.createServer(null, app).listen(process.env.PORT || 8080);
+app.listen(process.env.PORT || 8080);
