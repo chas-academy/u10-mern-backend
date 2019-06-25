@@ -1,17 +1,9 @@
 const router = require('express').Router();
 
 const CourseController = require('../controllers/course.controller');
+const { isAuthenticated } = require('../utils/middleware');
+
 // const SessionController = require('../controllers/session.controller');
-
-
-// Authentication check middleware
-const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  return res.status(401).send('Not authenticated');
-};
-
 
 //  Add a new course to the db
 router.post('/courses', isAuthenticated, CourseController.add);
