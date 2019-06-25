@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const Course = require('../models/course.model');
 
-const index = (res) => {
+const index = (req, res) => {
   Course.find({}, (err, courses) => {
     if (err) return console.error(err);
 
