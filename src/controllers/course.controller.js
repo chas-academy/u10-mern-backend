@@ -19,8 +19,7 @@ const get = (req, res) => {
       res.status(404).send('Resource not found');
       return console.error(err.message);
     }
-    res.send(course);
-    return console.log(course);
+    return res.send(course);
   });
 };
 
