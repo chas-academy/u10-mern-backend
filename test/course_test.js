@@ -54,7 +54,6 @@ describe('Course Routes', () => {
       const error = {
         message: 'Something went wrong',
       };
-
       const expectedObject = {
         error,
       };
@@ -62,9 +61,11 @@ describe('Course Routes', () => {
       // This feeds the given arguments to the cb in Course.findById()
       Course.findById.yields(error, null);
 
+      // Ask for an id that does not have a corresponding object
       const req = { params: { id: 99 } };
       const res = {};
 
+      // Stub and add return value so that we can test chained res methods
       res.status = sinon.stub().returns(res);
       res.send = sinon.stub().returns(res);
 
