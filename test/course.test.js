@@ -28,12 +28,55 @@ describe('Course Routes', () => {
     },
   ];
 
-  describe('GET /courses/:id', () => {
-    beforeEach(() => {
-      sinon.stub(Course, 'findById');
+  describe('GET /courses', () => {
+    beforeEach(() => sinon.stub(Course, 'find'));
+    afterEach(() => sinon.restore());
+
+    it('should respond with array containing all courses', () => {
+      const expectedArray = fakeCourses;
+
+      // This feeds the given arguments to the cb in Course.find()
+      Course.find.yields(null, expectedArray);
+
+      const req = {};
+      const res = { send: sinon.stub() };
+
+      CourseController.index(req, res);
+
+      // expect res.send to be called with expectedArray
+      expect(res.send.firstCall.args[0]).to.eql(expectedArray);
     });
 
-    afterEach(() => { Course.findById.restore(); });
+    it('should respond with a 404 status and error message if courses are NOT found', () => {
+      const error = {
+        message: 'Something went wrong',
+      };
+      const expectedObject = {
+        error,
+      };
+
+      // This feeds the given arguments to the cb in Course.find()
+      Course.find.yields(error, null);
+
+      // Ask for an id that does not have a corresponding object
+      const req = {};
+      const res = {};
+
+      // Stub and add return value so that we can test chained res methods
+      res.status = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+      CourseController.index(req, res);
+
+      // expect res.status to be set to 404
+      expect(res.status.firstCall.args[0]).to.equal(404);
+      expect(res.send.firstCall.args[0]).to.eql(expectedObject);
+    });
+  });
+
+  describe('GET /courses/:id', () => {
+    beforeEach(() => sinon.stub(Course, 'findById'));
+    afterEach(() => sinon.restore());
 
     it('should respond with a given course object', () => {
       const expectedObject = fakeCourses[0];

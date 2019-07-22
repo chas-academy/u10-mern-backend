@@ -2,9 +2,9 @@ const fs = require('fs');
 
 const Course = require('../models/course.model');
 
-const index = (res) => {
+const index = (req, res) => {
   Course.find({}, (err, courses) => {
-    if (err) return console.error(err);
+    if (err) return res.status(404).send({ error: { message: err.message } });
 
     return res.send(courses);
   });
@@ -15,9 +15,8 @@ const get = (req, res) => {
   const { id } = req.params;
 
   Course.findById(id, (err, course) => {
-    if (err) {
-      return res.status(404).send({ error: { message: err.message } });
-    }
+    if (err) return res.status(404).send({ error: { message: err.message } });
+
     return res.send(course);
   });
 };
