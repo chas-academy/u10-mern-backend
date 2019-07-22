@@ -16,8 +16,7 @@ const get = (req, res) => {
 
   Course.findById(id, (err, course) => {
     if (err) {
-      res.status(404).send('Resource not found');
-      return console.error(err.message);
+      return res.status(404).send({ error: { message: err.message } });
     }
     return res.send(course);
   });
