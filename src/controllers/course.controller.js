@@ -58,6 +58,7 @@ const remove = (req, res) => {
   });
 };
 
+// TODO: Check if this can be refactored in regards to findOneAndUpdate
 // Update a specific course (PATCH)
 const update = (req, res) => {
   Course.findOneAndUpdate({ _id: req.params.id }, req.body, (err) => {

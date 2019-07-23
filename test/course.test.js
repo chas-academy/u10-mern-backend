@@ -119,4 +119,24 @@ describe('Course Routes', () => {
       expect(res.send.firstCall.args[0]).to.eql(expectedObject);
     });
   });
+
+  describe('POST /courses', () => {
+    it('should respond with created object when successful');
+    it('should respond with error when wrong');
+  });
+
+  describe('DELETE /courses/:id', () => {
+    it('should respond with id of deleted object and 200 status');
+    it('should respond with error and a status of 404 when NOT found');
+  });
+
+  describe('PATCH /courses/:id', () => {
+    it('should respond with the updated object and a status of 200');
+    it('should respond with error and a status of 404 when NOT found');
+  });
+
+  describe('PUT /courses/:id', () => {
+    it('should respond with the new object and a status of 200');
+    it('should respond with error and a status of 404 when NOT found');
+  });
 });
