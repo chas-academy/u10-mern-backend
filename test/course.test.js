@@ -53,12 +53,15 @@ describe('Course Routes', () => {
       Course.find.yields(null, expectedArray);
 
       const req = {};
-      const res = { send: sinon.stub() };
+      const res = {};
+      res.send = sinon.stub().returns(res);
+      res.status = sinon.stub().returns(res);
 
       CourseController.index(req, res);
 
       // expect res.send to be called with expectedArray
-      expect(res.send.firstCall.args[0]).to.eql(expectedArray);
+      expect(res.send).to.be.calledOnceWith(expectedArray);
+      expect(res.status).to.be.calledOnceWith(200);
     });
 
     it('should respond with a 404 status and error message if courses are NOT found', () => {
@@ -72,7 +75,6 @@ describe('Course Routes', () => {
       // This feeds the given arguments to the cb in Course.find()
       Course.find.yields(error, null);
 
-      // Ask for an id that does not have a corresponding object
       const req = {};
       const res = {};
 
@@ -99,6 +101,9 @@ describe('Course Routes', () => {
 
       const req = { params: { id: fakeCourses[0].id } };
       const res = { send: sinon.stub() };
+
+      res.status = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
 
       CourseController.get(req, res);
 
@@ -265,7 +270,89 @@ describe('Course Routes', () => {
   });
 
   describe('PUT /courses/:id', () => {
-    it('should respond with the new object and a status of 200');
-    it('should respond with error and a status of 404 when NOT found');
+    beforeEach(() => {
+      sinon.stub(Course, 'replaceOne');
+      sinon.stub(Course, 'findById');
+    });
+
+    it('should call Course.replaceOne with an id and replacement object as arguments ', () => {
+      // fakeCourses[1] but without the ids, will replace another course
+      const replacementCourse = {
+        name: 'Mindfulness Marathon',
+        sessions: [
+          {
+            title: 'Breathing Exercise',
+            duration: 60,
+            filePath: '/some/file/path.mp3',
+          },
+        ],
+      };
+
+      const req = {
+        params: {
+          id: 1, // Course to replace
+        },
+
+        body: {
+          ...replacementCourse, // New course that will overwrite old course
+        },
+      };
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+      // set error argument to null for cb
+      Course.replaceOne.yields(null);
+
+      CourseController.replace(req, res);
+
+      const { id } = req.params;
+
+      expect(Course.replaceOne).to.have.been.calledOnceWith({ _id: id }, replacementCourse);
+    });
+    it('should respond with error and a status of 404 when NOT found', () => {
+      const error = {
+        message: 'No results found',
+      };
+
+      const expectedObject = {
+        error,
+      };
+
+      // fakeCourses[1] but without the ids, will replace another course
+      const replacementCourse = {
+        name: 'Mindfulness Marathon',
+        sessions: [
+          {
+            title: 'Breathing Exercise',
+            duration: 60,
+            filePath: '/some/file/path.mp3',
+          },
+        ],
+      };
+
+      const req = {
+        params: {
+          id: 99,
+        },
+
+        body: {
+          ...replacementCourse, // New course
+        },
+      };
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+      // set error argument to null for cb
+      Course.replaceOne.yields(error);
+
+      CourseController.replace(req, res);
+
+      expect(res.status).to.be.calledOnceWith(404);
+      expect(res.send).to.be.calledOnceWith(expectedObject);
+    });
   });
 });

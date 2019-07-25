@@ -6,7 +6,7 @@ const index = (req, res) => {
   Course.find({}, (err, courses) => {
     if (err) return res.status(404).send({ error: { message: err.message } });
 
-    return res.send(courses);
+    return res.status(200).send(courses);
   });
 };
 
@@ -18,7 +18,7 @@ const get = (req, res) => {
     if (err) return res.status(404).send({ error: { message: err.message } });
     if (course == null) return res.status(404).send({ error: { message: 'No results found' } });
 
-    return res.send(course);
+    return res.status(200).send(course);
   });
 };
 
@@ -70,19 +70,20 @@ const update = (req, res) => {
 
 // Replace a specific course (PUT)
 const replace = (req, res) => {
-  Course.replaceOne({ _id: req.params.id }, req.body, (err) => {
-    if (err) {
-      console.error(err.message);
-      return res.send({ error: { message: err.message } });
-    }
+  const { name } = req.body;
+  const sessions = req.body.sessions || [];
+  const { id } = req.params;
 
-    return res.send(Course.findById(req.params.id, (error, course) => {
-      if (err) {
-        console.error(error.message);
-        return res.send({ error: { message: err.message } });
-      }
-      return res.send(course);
-    }));
+  const replacementObj = {
+    name,
+    sessions,
+  };
+
+  Course.replaceOne({ _id: id }, replacementObj, (err) => {
+    if (err) return res.status(404).send({ error: { message: err.message } });
+
+    // Get the new replaced course
+    return get(req, res);
   });
 };
 
