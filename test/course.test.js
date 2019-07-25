@@ -1,12 +1,16 @@
 require('mocha'); // For getting mocha typings/intellisense
+const chai = require('chai');
 const { expect } = require('chai');
 const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 
 const Course = require('../src/models/course.model');
 const CourseController = require('../src/controllers/course.controller.js');
 
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
+
+chai.use(sinonChai);
 
 describe('Mocha', () => {
   it('should run our tests using npm', () => {
