@@ -16,6 +16,7 @@ const get = (req, res) => {
 
   Course.findById(id, (err, course) => {
     if (err) return res.status(404).send({ error: { message: err.message } });
+    if (course == null) return res.status(404).send({ error: { message: 'No results found' } });
 
     return res.send(course);
   });
@@ -49,14 +50,12 @@ const add = (req, res) => {
 const remove = (req, res) => {
   Course.findByIdAndDelete(req.params.id, (err, deletedCourse) => {
     if (err || deletedCourse == null) {
-      if (err) console.error(err);
-
-      return res.status(404).send('Resource not found');
+      return res.status(404).send({ error: { message: err ? err.message : 'No results found' } });
     }
-
-    return res.status(200).send(`Deleted course "${deletedCourse.name}"`);
+    return res.status(204).send();
   });
 };
+
 
 // TODO: Check if this can be refactored in regards to findOneAndUpdate
 // Update a specific course (PATCH)

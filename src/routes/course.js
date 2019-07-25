@@ -16,7 +16,7 @@ router.delete('/courses/:id', CourseController.remove);
 // GET a list of courses
 router.get('/courses', (req, res) => {
   if (req.isAuthenticated()) {
-    return CourseController.index(res);
+    return CourseController.index(req, res);
   }
   return res.status(401).send('Not authenticated!');
 });

@@ -14,7 +14,11 @@ describe('Mocha', () => {
   });
 });
 
+// Maybe change this to explicitly specify that it is testing CourseController functions only?
+// This is not testing the whole routes and connected middleware, only testing CourseController
 describe('Course Routes', () => {
+  afterEach(() => sinon.restore());
+
   const fakeCourses = [
     {
       id: 1,
@@ -30,7 +34,6 @@ describe('Course Routes', () => {
 
   describe('GET /courses', () => {
     beforeEach(() => sinon.stub(Course, 'find'));
-    afterEach(() => sinon.restore());
 
     it('should respond with array containing all courses', () => {
       const expectedArray = fakeCourses;
@@ -76,7 +79,6 @@ describe('Course Routes', () => {
 
   describe('GET /courses/:id', () => {
     beforeEach(() => sinon.stub(Course, 'findById'));
-    afterEach(() => sinon.restore());
 
     it('should respond with a given course object', () => {
       const expectedObject = fakeCourses[0];
@@ -126,8 +128,62 @@ describe('Course Routes', () => {
   });
 
   describe('DELETE /courses/:id', () => {
-    it('should respond with id of deleted object and 200 status');
-    it('should respond with error and a status of 404 when NOT found');
+    beforeEach(() => sinon.stub(Course, 'findByIdAndDelete'));
+
+    it('should respond with an empty body and a status of 204', () => {
+      const req = { params: { id: fakeCourses[0].id } };
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+      Course.findByIdAndDelete.yields(null, fakeCourses[0]);
+
+      CourseController.remove(req, res);
+
+      // Expect that res.send() is called without arguments
+      expect(res.send.firstCall.args[0]).to.not.exist;
+      expect(res.status.firstCall.args[0]).to.equal(204);
+    });
+    it('should respond with an error and a status of 404 when course is not found', () => {
+      const req = { params: { id: 99 } };
+      const res = {};
+
+      const expectedObject = {
+        error: {
+          message: 'No results found',
+        },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+      // No mongoose errors, but results returned is null
+      Course.findByIdAndDelete.yields(null, null);
+      CourseController.remove(req, res);
+
+      expect(res.status.firstCall.args[0]).to.equal(404);
+      expect(res.send.firstCall.args[0]).to.eql(expectedObject);
+    });
+    it('should respond with an error and a status of 404 when something went wrong', () => {
+      const req = { params: { id: 99 } };
+      const res = {};
+
+      const expectedObject = {
+        error: {
+          message: 'Something went wrong, resource not found',
+        },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+      Course.findByIdAndDelete.yields(expectedObject.error, null);
+      CourseController.remove(req, res);
+
+      expect(res.status.firstCall.args[0]).to.equal(404);
+      expect(res.send.firstCall.args[0]).to.eql(expectedObject);
+    });
   });
 
   describe('PATCH /courses/:id', () => {
