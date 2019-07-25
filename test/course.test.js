@@ -32,7 +32,14 @@ describe('Course Routes', () => {
     {
       id: 2,
       name: 'Mindfulness Marathon',
-      sessions: [],
+      sessions: [
+        {
+          id: 1,
+          title: 'Breathing Exercise',
+          duration: 60,
+          filePath: '/some/file/path.mp3',
+        },
+      ],
     },
   ];
 
@@ -127,8 +134,70 @@ describe('Course Routes', () => {
   });
 
   describe('POST /courses', () => {
-    it('should respond with created object when successful');
-    it('should respond with error when wrong');
+    afterEach(() => sinon.restore());
+
+    it('should respond with created object and a status of 201', () => {
+      const expectedObject = fakeCourses[1];
+
+      // fakeCourses[1] but without the ids
+      const courseToBeCreated = {
+        name: 'Mindfulness Marathon',
+        sessions: [
+          {
+            title: 'Breathing Exercise',
+            duration: 60,
+            filePath: '/some/file/path.mp3',
+          },
+        ],
+      };
+
+      const req = {
+        body: {
+          ...courseToBeCreated,
+        },
+      };
+
+      const res = {};
+
+      sinon.stub(Course.prototype, 'save');
+
+      Course.prototype.save.yields(null, expectedObject);
+      // Course.prototype.save.returns(expectedObject);
+      // sinon.stub(course, 'save');
+
+      res.status = sinon.stub().returns(res);
+      res.set = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+      CourseController.add(req, res);
+      expect(res.send.firstCall.args[0]).to.eql(expectedObject);
+    });
+    it('should respond with an error and status of 400 if request is missing something required', () => {
+      const error = { message: 'Something was missing in the request' };
+      const expectedObject = { error };
+
+      const req = {
+        body: {
+
+        },
+      };
+
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.set = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+
+      sinon.stub(Course.prototype, 'save');
+
+      Course.prototype.save.yields(error, null);
+
+      CourseController.add(req, res);
+
+      expect(res.status).to.have.been.calledOnceWith(400);
+      expect(res.send).to.have.been.calledOnceWith(expectedObject);
+    });
   });
 
   describe('DELETE /courses/:id', () => {

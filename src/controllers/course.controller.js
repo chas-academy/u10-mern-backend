@@ -30,19 +30,11 @@ const add = (req, res) => {
   const course = new Course({ name, sessions });
 
   course.save((err, savedCourse) => {
-    if (err) return console.error(err);
+    if (err) return res.status(400).send({ error: { message: err.message } });
 
-    console.log(`Successfully saved course: ${savedCourse}`);
-
-    res.status(201);
     res.set({ Location: `${process.env.SERVER_URL}/api/courses/${savedCourse._id}` });
 
-    return res.send({
-      data: {
-        type: 'course',
-        ...savedCourse.toObject(),
-      },
-    });
+    return res.status(201).send(savedCourse);
   });
 };
 
