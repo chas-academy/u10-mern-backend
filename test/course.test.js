@@ -268,7 +268,30 @@ describe('Course Routes', () => {
     beforeEach(() => {
       sinon.stub(Course, 'findOneAndUpdate');
     });
-    it('should respond with the updated object and a status of 200');
+    it('should call Course.findOneAndUpdate with an id and request body as arguments', () => {
+      const req = {
+        params: {
+          id: 1, // Course to update
+        },
+
+        body: {
+          name: 'New Course Name', // New course that will overwrite old course
+        },
+      };
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+      // set error argument to null for cb
+      Course.findOneAndUpdate.yields(null);
+
+      CourseController.update(req, res);
+
+      const { id } = req.params;
+
+      expect(Course.findOneAndUpdate).to.have.been.calledOnceWith({ _id: id }, req.body);
+    });
     it('should respond with error and a status of 404 when NOT found', () => {
       const error = {
         message: 'No results found',
