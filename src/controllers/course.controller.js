@@ -53,18 +53,9 @@ const remove = (req, res) => {
 // Update a specific course (PATCH)
 const update = (req, res) => {
   Course.findOneAndUpdate({ _id: req.params.id }, req.body, (err) => {
-    if (err) {
-      console.error(err);
-      res.send({ error: { message: err.message } });
-    } else {
-      Course.findById(req.params.id, (error, course) => {
-        if (error) {
-          console.error(error.message);
-          return res.send({ error: { message: error.message } });
-        }
-        return res.send(course);
-      });
-    }
+    if (err) return res.status(404).send({ error: { message: err.message } });
+
+    return get(req, res);
   });
 };
 

@@ -265,14 +265,41 @@ describe('Course Routes', () => {
   });
 
   describe('PATCH /courses/:id', () => {
+    beforeEach(() => {
+      sinon.stub(Course, 'findOneAndUpdate');
+    });
     it('should respond with the updated object and a status of 200');
-    it('should respond with error and a status of 404 when NOT found');
+    it('should respond with error and a status of 404 when NOT found', () => {
+      const error = {
+        message: 'No results found',
+      };
+
+      const expectedObject = {
+        error,
+      };
+
+      const req = {
+        params: {
+          id: 99,
+        },
+      };
+
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.send = sinon.stub().returns(res);
+
+      Course.findOneAndUpdate.yields(error);
+      CourseController.update(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.send).to.have.been.calledWith(expectedObject);
+    });
   });
 
   describe('PUT /courses/:id', () => {
     beforeEach(() => {
       sinon.stub(Course, 'replaceOne');
-      sinon.stub(Course, 'findById');
     });
 
     it('should call Course.replaceOne with an id and replacement object as arguments ', () => {
