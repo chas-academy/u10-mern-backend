@@ -13,6 +13,7 @@ const schema = new mongoose.Schema({
     email: String,
     name: String,
   },
+  role: { type: String, default: 'user' },
   subscription: {
     active: { type: Boolean, default: false },
   },
