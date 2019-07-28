@@ -18,9 +18,8 @@ describe('Mocha', () => {
   });
 });
 
-// Maybe change this to explicitly specify that it is testing CourseController functions only?
 // This is not testing the whole routes and connected middleware, only testing CourseController
-describe('Course Routes', () => {
+describe('Course Controller Functions', () => {
   afterEach(() => sinon.restore());
 
   const fakeCourses = [
