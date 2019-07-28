@@ -2,11 +2,11 @@ const fs = require('fs');
 
 const Course = require('../models/course.model');
 
-const index = (res) => {
+const index = (req, res) => {
   Course.find({}, (err, courses) => {
-    if (err) return console.error(err);
+    if (err) return res.status(404).send({ error: { message: err.message } });
 
-    return res.send(courses);
+    return res.status(200).send(courses);
   });
 };
 
@@ -15,12 +15,10 @@ const get = (req, res) => {
   const { id } = req.params;
 
   Course.findById(id, (err, course) => {
-    if (err) {
-      res.status(404).send('Resource not found');
-      return console.error(err.message);
-    }
-    res.send(course);
-    return console.log(course);
+    if (err) return res.status(404).send({ error: { message: err.message } });
+    if (course == null) return res.status(404).send({ error: { message: 'No results found' } });
+
+    return res.status(200).send(course);
   });
 };
 
@@ -32,19 +30,11 @@ const add = (req, res) => {
   const course = new Course({ name, sessions });
 
   course.save((err, savedCourse) => {
-    if (err) return console.error(err);
+    if (err) return res.status(400).send({ error: { message: err.message } });
 
-    console.log(`Successfully saved course: ${savedCourse}`);
-
-    res.status(201);
     res.set({ Location: `${process.env.SERVER_URL}/api/courses/${savedCourse._id}` });
 
-    return res.send({
-      data: {
-        type: 'course',
-        ...savedCourse.toObject(),
-      },
-    });
+    return res.status(201).send(savedCourse);
   });
 };
 
@@ -52,48 +42,39 @@ const add = (req, res) => {
 const remove = (req, res) => {
   Course.findByIdAndDelete(req.params.id, (err, deletedCourse) => {
     if (err || deletedCourse == null) {
-      if (err) console.error(err);
-
-      return res.status(404).send('Resource not found');
+      return res.status(404).send({ error: { message: err ? err.message : 'No results found' } });
     }
-
-    return res.status(200).send(`Deleted course "${deletedCourse.name}"`);
+    return res.status(204).send();
   });
 };
 
+
+// TODO: Check if this can be refactored in regards to findOneAndUpdate
 // Update a specific course (PATCH)
 const update = (req, res) => {
   Course.findOneAndUpdate({ _id: req.params.id }, req.body, (err) => {
-    if (err) {
-      console.error(err);
-      res.send({ error: { message: err.message } });
-    } else {
-      Course.findById(req.params.id, (error, course) => {
-        if (error) {
-          console.error(error.message);
-          return res.send({ error: { message: error.message } });
-        }
-        return res.send(course);
-      });
-    }
+    if (err) return res.status(404).send({ error: { message: err.message } });
+
+    return get(req, res);
   });
 };
 
 // Replace a specific course (PUT)
 const replace = (req, res) => {
-  Course.replaceOne({ _id: req.params.id }, req.body, (err) => {
-    if (err) {
-      console.error(err.message);
-      return res.send({ error: { message: err.message } });
-    }
+  const { name } = req.body;
+  const sessions = req.body.sessions || [];
+  const { id } = req.params;
 
-    return res.send(Course.findById(req.params.id, (error, course) => {
-      if (err) {
-        console.error(error.message);
-        return res.send({ error: { message: err.message } });
-      }
-      return res.send(course);
-    }));
+  const replacementObj = {
+    name,
+    sessions,
+  };
+
+  Course.replaceOne({ _id: id }, replacementObj, (err) => {
+    if (err) return res.status(404).send({ error: { message: err.message } });
+
+    // Get the new replaced course
+    return get(req, res);
   });
 };
 

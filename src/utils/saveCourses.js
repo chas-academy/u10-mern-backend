@@ -4,6 +4,8 @@ const mp3Duration = require('mp3-duration');
 const Course = require('../models/course.model');
 const Session = require('../models/session.model');
 
+// This file is outdated, should be reworked or removed.
+
 // This file is for creating and saving course objects to the database.
 // The course objects will contain course and session meta data, and is
 // retrieved by looking in the directory containing the courses directories.
