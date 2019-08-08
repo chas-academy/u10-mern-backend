@@ -1,3 +1,5 @@
+[![buddy pipeline](https://app.buddy.works/chas-academy/u10-meditation-backend/pipelines/pipeline/186097/badge.svg?token=bd6d95c0722525d87413fe6f13408373af7df69b0b3e559a6713e80c9a29b1a8 "buddy pipeline")](https://app.buddy.works/chas-academy/u10-meditation-backend/pipelines/pipeline/186097)
+
 ## Getting started
 
 1. Run `npm install`.
