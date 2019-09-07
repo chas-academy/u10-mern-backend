@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const mp3Duration = require('mp3-duration');
+const musicMetadata = require('music-metadata');
 const Course = require('../models/course.model');
 const Session = require('../models/session.model');
 
@@ -31,11 +31,8 @@ function structureSessions(sessions, coursePath, callback) {
     };
 
     // Get and set duration of session file
-    await mp3Duration(path.join(coursePath, session), (err, duration) => {
-      if (err) console.error(err);
-
-      sessionObj.duration = duration;
-    });
+    const metadata = await musicMetadata.parseFile(path.join(coursePath, session), { duration: true });
+    sessionObj.duration = metadata.format.duration;
 
     structuredSessions.push(sessionObj);
 
