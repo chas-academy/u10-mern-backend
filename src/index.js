@@ -34,7 +34,7 @@ require('./config/passport')(passport);
 
 // require('./utils/saveCourses.js');
 
-app.use(require('./routes/auth'));
+app.use('/api', require('./routes/auth'));
 app.use('/api', require('./routes/user'));
 app.use('/api', require('./routes/course'));
 
